@@ -1,0 +1,109 @@
+@import url('https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;700&display=swap');
+
+body {
+  background: #121212;
+  color: #f0f4ff;
+  font-family: 'Space Grotesk', sans-serif;
+  margin: 0;
+}
+
+.container {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+h1 {
+  font-size: 4rem;
+  line-height: 1;
+  color: #4e9fff;
+  font-weight: 600;
+}
+
+.sub {
+  font-size: 3rem;
+  color: #a6c8ff;
+  font-style: normal;
+  font-weight: 400;
+}
+
+.intro {
+  margin: 1rem 0 2rem;
+  font-size: 1.25rem;
+  color: #d1d9e6;
+}
+
+.projects h2 {
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+  color: #4e9fff;
+}
+
+.grid {
+  display: flex;
+  gap: 2rem;
+  flex-wrap: wrap;
+}
+
+.card {
+  background-color: #1c1c2b;
+  border: 1px solid #4e9fff;
+  padding: 2rem;
+  flex: 1 1 280px;
+  border-radius: 6px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
+}
+
+.card h3 {
+  color: #4e9fff;
+  font-size: 1.4rem;
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+}
+
+.card p {
+  font-size: 1rem;
+  color: #f0f4ff;
+  line-height: 1.6;
+}
+
+/* Language selector full-screen overlay */
+.lang-selector {
+  height: 100vh;
+  width: 100vw;
+  background-color: #121212;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.lang-box {
+  display: flex;
+  gap: 2rem;
+  background-color: #121212;
+}
+
+.lang-box button {
+  background-color: #121212;
+  border: 1.5px solid #ffffff;
+  color: #ffffff;
+  font-size: 2rem;
+  font-weight: 500;
+  cursor: pointer;
+  padding: 0.8rem 2rem;
+  transition: all 0.3s ease;
+  border-radius: 4px;
+}
+
+.lang-box button:hover {
+  color: #4e9fff;
+  border-color: #4e9fff;
+  transform: scale(1.05);
+}
+
