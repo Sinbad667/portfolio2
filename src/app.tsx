@@ -7,6 +7,7 @@ const App: React.FC = () => {
   if (!language) {
     return (
       <div className="lang-selector">
+        <div className="initials-3d">BH</div>
         <div className="lang-box">
           <button onClick={() => setLanguage("EN")}>EN</button>
           <button onClick={() => setLanguage("FR")}>FR</button>
@@ -18,7 +19,9 @@ const App: React.FC = () => {
   return (
     <main className="container">
       <header className="site-header">
-        <div className="site-title">Bilal Hamzaoui</div>
+        <div className="site-title">
+          <div className="initials-3d header-initials">BH</div>
+        </div>
         <nav>
           <ul>
             <li>
