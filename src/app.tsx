@@ -54,11 +54,7 @@ const App: React.FC = () => {
               ? "Front-End Developer & Designer, student at 42 Luxembourg"
               : "Développeur Front-End & Designer, étudiant à 42 Luxembourg"}
           </p>
-          <img
-            src="/logo/42_white.png"
-            alt="École 42"
-            className="logo-42"
-          />
+          <img src="/logo/42_white.png" alt="École 42" className="logo-42" />
         </div>
       </section>
 
