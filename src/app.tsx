@@ -55,7 +55,7 @@ const App: React.FC = () => {
               : "Développeur Front-End & Designer, étudiant à 42 Luxembourg"}
           </p>
           <img
-            src="./public/logo/42_white.png"
+            src="/logo/42_white.png"
             alt="École 42"
             className="logo-42"
           />
@@ -126,7 +126,7 @@ const App: React.FC = () => {
         <div className="project-cards">
           <div className="project-card">
             <img
-              src="./public/logo/valeklogo.jpeg"
+              src="/logo/valeklogo.jpeg"
               alt="Valek Studio"
               className="project-logo"
             />
@@ -162,7 +162,7 @@ const App: React.FC = () => {
 
           <div className="project-card">
             <img
-              src="./public/logo/ricbeller_logo.png"
+              src="/logo/ricbeller_logo.png"
               alt="Ricbeller"
               className="project-logo"
             />
@@ -306,7 +306,7 @@ const App: React.FC = () => {
                 : "Planifier un Rendez-vous"}
             </h3>
             <form
-              action="https://formspree.io/f/YOUR_FORM_ID"
+              action="https://formspree.io/f/movlqybl"
               method="POST"
               className="contact-form"
             >
