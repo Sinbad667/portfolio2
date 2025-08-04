@@ -1,9 +1,121 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./style.css";
 
 const App: React.FC = () => {
   const [language, setLanguage] = useState<"EN" | "FR" | null>(null);
   const [showContactForm, setShowContactForm] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
+  const [formErrors, setFormErrors] = useState<{ [key: string]: string }>({});
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitSuccess, setSubmitSuccess] = useState(false);
+
+  const handleCloseSuccess = () => {
+    setSubmitSuccess(false);
+    setShowContactForm(false);
+  };
+
+  const validateForm = (formData: FormData) => {
+    const errors: { [key: string]: string } = {};
+
+    const firstname = formData.get("firstname") as string;
+    const lastname = formData.get("lastname") as string;
+    const email = formData.get("email") as string;
+    const phone = formData.get("phone") as string;
+    const project = formData.get("project") as string;
+
+    if (!firstname || firstname.trim().length < 2) {
+      errors.firstname =
+        language === "EN"
+          ? "First name must be at least 2 characters"
+          : "Le prénom doit contenir au moins 2 caractères";
+    }
+
+    if (!lastname || lastname.trim().length < 2) {
+      errors.lastname =
+        language === "EN"
+          ? "Last name must be at least 2 characters"
+          : "Le nom doit contenir au moins 2 caractères";
+    }
+
+    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      errors.email =
+        language === "EN"
+          ? "Please enter a valid email address"
+          : "Veuillez entrer une adresse email valide";
+    }
+
+    if (!phone || !/^[\+]?[\d\s\-\(\)]{10,}$/.test(phone)) {
+      errors.phone =
+        language === "EN"
+          ? "Please enter a valid phone number"
+          : "Veuillez entrer un numéro de téléphone valide";
+    }
+
+    if (!project || project.trim().length < 10) {
+      errors.project =
+        language === "EN"
+          ? "Please describe your project (minimum 10 characters)"
+          : "Veuillez décrire votre projet (minimum 10 caractères)";
+    }
+
+    return errors;
+  };
+
+  const handleFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    setFormErrors({});
+
+    const formData = new FormData(e.currentTarget);
+    const errors = validateForm(formData);
+
+    if (Object.keys(errors).length > 0) {
+      setFormErrors(errors);
+      setIsSubmitting(false);
+      return;
+    }
+
+    try {
+      const response = await fetch("https://formspree.io/f/movlqybl", {
+        method: "POST",
+        body: formData,
+        headers: {
+          Accept: "application/json",
+        },
+      });
+
+      if (response.ok) {
+        setSubmitSuccess(true);
+        e.currentTarget.reset();
+      } else {
+        setFormErrors({
+          submit:
+            language === "EN"
+              ? "An error occurred. Please try again."
+              : "Une erreur s'est produite. Veuillez réessayer.",
+        });
+      }
+    } catch (error) {
+      setFormErrors({
+        submit:
+          language === "EN"
+            ? "Network error. Please check your connection."
+            : "Erreur réseau. Vérifiez votre connexion.",
+      });
+    }
+
+    setIsSubmitting(false);
+  };
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrollTop = window.scrollY;
+      setIsScrolled(scrollTop > 50);
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   if (!language) {
     return (
@@ -18,43 +130,64 @@ const App: React.FC = () => {
   }
 
   return (
-    <main className="container">
-      <header className="site-header">
-        <div className="site-title">
-          <div className="initials-3d header-initials">BH</div>
+    <main>
+      <header className={`site-header ${isScrolled ? "scrolled" : ""}`}>
+        <div className="container">
+          <div className="site-title">
+            <div className="initials-3d header-initials">BH</div>
+          </div>
+          <nav>
+            <ul>
+              <li>
+                <a href="#skills">
+                  {language === "EN" ? "Skills" : "Compétences"}
+                </a>
+              </li>
+              <li>
+                <a href="#projects">
+                  {language === "EN" ? "Projects" : "Projets"}
+                </a>
+              </li>
+              <li>
+                <a href="#contact">
+                  {language === "EN" ? "Contact" : "Contact"}
+                </a>
+              </li>
+            </ul>
+          </nav>
         </div>
-        <nav>
-          <ul>
-            <li>
-              <a href="#skills">
-                {language === "EN" ? "Skills" : "Compétences"}
-              </a>
-            </li>
-            <li>
-              <a href="#projects">
-                {language === "EN" ? "Projects" : "Projets"}
-              </a>
-            </li>
-            <li>
-              <a href="#contact">{language === "EN" ? "Contact" : "Contact"}</a>
-            </li>
-          </ul>
-        </nav>
       </header>
 
       <section className="hero">
-        <h1>
-          {language === "EN"
-            ? "Creative Front-End Developer"
-            : "Développeur Front-End Créatif"}
-        </h1>
-        <div className="intro-wrapper">
-          <p className="intro">
+        <div className="container">
+          <h1>
             {language === "EN"
-              ? "Front-End Developer & Designer, student at 42 Luxembourg"
-              : "Développeur Front-End & Designer, étudiant à 42 Luxembourg"}
-          </p>
-          <img src="/logo/42_white.png" alt="École 42" className="logo-42" />
+              ? "Lets transform your ideas into Web experiences"
+              : "Transformons vos idées en expériences Web"}
+          </h1>
+          <div className="intro-wrapper">
+            <p className="intro">
+              {language === "EN" ? (
+                <>
+                  Front-End Developer & Designer
+                  <br />
+                  School 42 - Luxembourg
+                </>
+              ) : (
+                <>
+                  Développeur Front-End & Designer
+                  <br />
+                  École 42 - Luxembourg
+                </>
+              )}
+            </p>
+          </div>
+          <div className="logo-wrapper">
+            <img src="/logo/42_white.png" alt="École 42" className="logo-42" />
+          </div>
+        </div>
+        <div className="scroll-indicator">
+          <span>{language === "EN" ? "Scroll" : "Défiler"}</span>
         </div>
       </section>
 
@@ -115,6 +248,12 @@ const App: React.FC = () => {
             <span>CSS</span>
           </div>
         </div>
+        <button
+          onClick={() => setShowContactForm(true)}
+          className="section-contact-btn"
+        >
+          {language === "EN" ? "Contact Me" : "Me Contacter"}
+        </button>
       </section>
 
       <section className="projects" id="projects">
@@ -192,6 +331,12 @@ const App: React.FC = () => {
             </a>
           </div>
         </div>
+        <button
+          onClick={() => setShowContactForm(true)}
+          className="section-contact-btn"
+        >
+          {language === "EN" ? "Contact Me" : "Me Contacter"}
+        </button>
       </section>
 
       <section className="contact" id="contact">
@@ -261,25 +406,6 @@ const App: React.FC = () => {
         </div>
       </footer>
 
-      {/* CTA Flottant */}
-      <div className="floating-cta">
-        <div className="floating-cta-content">
-          <span className="floating-cta-text">
-            {language === "EN"
-              ? "Let's Build Something Amazing Together"
-              : "Créons Quelque Chose d'Extraordinaire Ensemble"}
-          </span>
-          <div className="floating-cta-buttons">
-            <button
-              onClick={() => setShowContactForm(true)}
-              className="floating-btn primary"
-            >
-              {language === "EN" ? "Contact Me" : "Me Contacter"}
-            </button>
-          </div>
-        </div>
-      </div>
-
       {/* Formulaire de contact modal */}
       {showContactForm && (
         <div
@@ -301,39 +427,111 @@ const App: React.FC = () => {
                 ? "Schedule a Meeting"
                 : "Planifier un Rendez-vous"}
             </h3>
-            <form
-              action="https://formspree.io/f/movlqybl"
-              method="POST"
-              className="contact-form"
-            >
+            <form onSubmit={handleFormSubmit} className="contact-form">
+              {formErrors.submit && (
+                <div className="form-error-general">{formErrors.submit}</div>
+              )}
+
+              {submitSuccess && (
+                <div className="success-overlay" onClick={handleCloseSuccess}>
+                  <div
+                    className="success-message"
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    <h3>{language === "EN" ? "Thank you!" : "Merci !"}</h3>
+                    <p>
+                      {language === "EN"
+                        ? "We'll contact you soon."
+                        : "Nous vous contacterons bientôt."}
+                    </p>
+                    <button
+                      className="success-close-btn"
+                      onClick={handleCloseSuccess}
+                    >
+                      {language === "EN" ? "Close" : "Fermer"}
+                    </button>
+                  </div>
+                </div>
+              )}
+
               <div className="form-group">
                 <label>{language === "EN" ? "First Name" : "Prénom"}</label>
-                <input type="text" name="firstname" required />
+                <input
+                  type="text"
+                  name="firstname"
+                  className={formErrors.firstname ? "error" : ""}
+                />
+                {formErrors.firstname && (
+                  <span className="form-error">{formErrors.firstname}</span>
+                )}
               </div>
+
               <div className="form-group">
                 <label>{language === "EN" ? "Last Name" : "Nom"}</label>
-                <input type="text" name="lastname" required />
+                <input
+                  type="text"
+                  name="lastname"
+                  className={formErrors.lastname ? "error" : ""}
+                />
+                {formErrors.lastname && (
+                  <span className="form-error">{formErrors.lastname}</span>
+                )}
               </div>
+
               <div className="form-group">
                 <label>Email</label>
-                <input type="email" name="email" required />
+                <input
+                  type="email"
+                  name="email"
+                  className={formErrors.email ? "error" : ""}
+                />
+                {formErrors.email && (
+                  <span className="form-error">{formErrors.email}</span>
+                )}
               </div>
+
               <div className="form-group">
                 <label>
                   {language === "EN" ? "Phone Number" : "Numéro de téléphone"}
                 </label>
-                <input type="tel" name="phone" required />
+                <input
+                  type="tel"
+                  name="phone"
+                  className={formErrors.phone ? "error" : ""}
+                />
+                {formErrors.phone && (
+                  <span className="form-error">{formErrors.phone}</span>
+                )}
               </div>
+
               <div className="form-group">
                 <label>
                   {language === "EN"
                     ? "A few words about your project"
                     : "Quelques mots sur votre projet"}
                 </label>
-                <textarea name="project" rows={4} required></textarea>
+                <textarea
+                  name="project"
+                  rows={4}
+                  className={formErrors.project ? "error" : ""}
+                ></textarea>
+                {formErrors.project && (
+                  <span className="form-error">{formErrors.project}</span>
+                )}
               </div>
-              <button type="submit" className="submit-btn">
-                {language === "EN" ? "Send Request" : "Envoyer la demande"}
+
+              <button
+                type="submit"
+                className="submit-btn"
+                disabled={isSubmitting}
+              >
+                {isSubmitting
+                  ? language === "EN"
+                    ? "Sending..."
+                    : "Envoi en cours..."
+                  : language === "EN"
+                  ? "Let's schedule your call"
+                  : "Planifions votre appel"}
               </button>
             </form>
           </div>
